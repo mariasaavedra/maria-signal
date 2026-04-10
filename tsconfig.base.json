@@ -14,7 +14,7 @@
 
     "baseUrl": ".",
     "paths": {
-      "@m7/mopidy-client": ["libs/mopidy-client/src/index.ts"]
+      "@m7/mopidy": ["libs/mopidy/src/index.ts"]
     }
   }
 }

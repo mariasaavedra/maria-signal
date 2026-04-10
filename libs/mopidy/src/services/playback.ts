@@ -10,6 +10,7 @@ export interface PlaybackService {
   previous(): Promise<void>;
   getState(): Promise<PlaybackState>;
   getCurrentTrack(): Promise<Track | null>;
+  getTimePosition(): Promise<number>;
 }
 
 const normalizeTrack = (track: MopidyTrackRaw | null): Track | null => {
@@ -56,5 +57,6 @@ export const createPlaybackService = (client: MopidyClient): PlaybackService => 
       const track = await client.call('core.playback.get_current_track');
       return normalizeTrack(track);
     },
+   getTimePosition: () => client.call('core.playback.get_time_position'),
   };
 };

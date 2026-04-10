@@ -2,18 +2,17 @@
   "name": "audio-os",
   "private": true,
   "type": "module",
-
   "workspaces": [
     "apps/*",
     "libs/*"
   ],
-
   "scripts": {
-    "dev": "echo \"run app dev script\"",
+     "dev": "npm run dev -w apps/web",
+    "build": "npm run build -w apps/web",
+    "start": "npm run start -w apps/web",
     "typecheck": "tsc --noEmit",
-    "clean": "rimraf node_modules **/node_modules"
+    "clean": "rimraf node_modules package-lock.json apps/*/node_modules libs/*/node_modules"
   },
-
   "devDependencies": {
     "typescript": "^5.4.0",
     "rimraf": "^5.0.0"
