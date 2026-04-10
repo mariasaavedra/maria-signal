@@ -1,9 +1,16 @@
-export * from './client';
-export * from './models';
-export * from './rpc/http';
-export * from './rpc/methods';
-export * from './rpc/types';
-export * from './services/playback';
-export * from './services/playlists';
-export * from './services/queue';
+export { createMopidy, createMopidyClient } from './client';
 
+export type {
+    CreateMopidyOptions, MopidyClient,
+    MopidyFacade
+} from './client';
+
+export type {
+    PlaybackState,
+    PlaylistRef,
+    TlTrack,
+    Track
+} from './models';
+
+export * from './rpc';
+export * from './services';
