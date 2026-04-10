@@ -1,14 +1,37 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [loading, setLoading] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const refreshState = async () => {
+    const res = await fetch('/api/audio/state');
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch state: ${res.status}`);
+    }
+
+    const { status } = await res.json();
+    setStatus(status);
+  };
 
   const call = async (endpoint: string, method: 'GET' | 'POST' = 'POST') => {
     try {
       setLoading(endpoint);
-      await fetch(`/api/audio/${endpoint}`, { method });
+      setError(null);
+
+      const res = await fetch(`/api/audio/${endpoint}`, { method });
+
+      if (!res.ok) {
+        throw new Error(`Request failed: ${res.status}`);
+      }
+
+      await refreshState();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
     } finally {
       setLoading(null);
     }
@@ -16,9 +39,22 @@ export default function Home() {
 
   const isLoading = (key: string) => loading === key;
 
+  useEffect(() => {
+    refreshState().catch(() => { });
+  }, []);
+
   return (
     <div className="flex flex-col flex-1 items-center justify-center gap-4 bg-zinc-50 font-sans dark:bg-black">
-      
+
+      {/* Status display */}
+      <div className="text-lg font-semibold">
+        {status ?? 'unknown'}
+      </div>
+
+      {error && (
+        <div className="text-sm text-red-500">{error}</div>
+      )}
+
       <div className="flex gap-2">
         <button
           onClick={() => call('previous')}
