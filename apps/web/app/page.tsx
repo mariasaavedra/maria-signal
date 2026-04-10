@@ -1,11 +1,15 @@
 'use client';
 
+import { PlaybackState as PlaybackStatus, Track } from '@m7/mopidy';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [loading, setLoading] = useState<string | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [track, setTrack] = useState<Track | null>(null);
+  const [artist, setArtist] = useState<string | null>(null);
+  const [status, setStatus] = useState<PlaybackStatus | null>(null);
+
 
   const refreshState = async () => {
     const res = await fetch('/api/audio/state');
@@ -14,8 +18,11 @@ export default function Home() {
       throw new Error(`Failed to fetch state: ${res.status}`);
     }
 
-    const { status } = await res.json();
+    const { status, track, artist } = await res.json();
+
     setStatus(status);
+    setTrack(track)
+    setArtist(artist)
   };
 
   const call = async (endpoint: string, method: 'GET' | 'POST' = 'POST') => {
@@ -45,7 +52,18 @@ export default function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center gap-4 bg-zinc-50 font-sans dark:bg-black">
+    <div className="w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="text-xs uppercase tracking-wide text-zinc-500">Status</div>
+        <div className="text-lg font-semibold">{status ?? 'unknown'}</div>
 
+        <div className="mt-4 text-xs uppercase tracking-wide text-zinc-500">Track</div>
+        <div className="text-base">{track ?.name ?? 'No track'}</div>
+
+        <div className="mt-4 text-xs uppercase tracking-wide text-zinc-500">Artist</div>
+        <div className="text-base">{artist ?? 'Unknown artist'}</div>
+      </div>
+
+      {error ? <div className="text-sm text-red-500">{error}</div> : null}
       {/* Status display */}
       <div className="text-lg font-semibold">
         {status ?? 'unknown'}
