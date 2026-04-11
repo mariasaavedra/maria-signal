@@ -22,13 +22,13 @@ export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
       {/* Top row: artwork + title/artist */}
       <div className="flex items-center gap-4">
         {/* Artwork */}
-        <div className="w-24 h-24 rounded-2xl overflow-hidden shrink-0 bg-charcoal/20 flex items-center justify-center">
+        <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 bg-charcoal/20 flex items-center justify-center">
           {artworkUrl ? (
             <Image
               src={artworkUrl}
               alt={title}
-              width={96}
-              height={96}
+              width={128}
+              height={128}
               className="object-cover w-full h-full"
               unoptimized
             />

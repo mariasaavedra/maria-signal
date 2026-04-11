@@ -27,7 +27,13 @@ export function ControlButton({
       onClick={onClick}
       className={`${circle} ${bg} rounded-full flex items-center justify-center shrink-0`}
     >
-      <Image src={icon} alt={alt} width={size === 'lg' ? 28 : 22} height={size === 'lg' ? 28 : 22} />
+      <Image
+        src={icon}
+        alt={alt}
+        width={size === 'lg' ? 28 : 22}
+        height={size === 'lg' ? 28 : 22}
+        className={variant === 'dark' ? 'invert' : ''}
+      />
     </button>
   );
 }
