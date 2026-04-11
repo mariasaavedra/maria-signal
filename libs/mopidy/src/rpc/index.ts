@@ -1,26 +1,33 @@
 export {
-    isJsonRpcFailure, MopidyRpcError,
-    MopidyTransportError,
-    MopidyValidationError
+  isJsonRpcFailure,
+  MopidyRpcError,
+  MopidyTransportError,
+  MopidyValidationError,
 } from './types';
 
 export type {
-    JsonRpcErrorObject, JsonRpcFailure,
-    JsonRpcId,
-    JsonRpcRequest,
-    JsonRpcResponse,
-    JsonRpcSuccess
+  JsonRpcErrorObject,
+  JsonRpcFailure,
+  JsonRpcId,
+  JsonRpcRequest,
+  JsonRpcResponse,
+  JsonRpcSuccess,
 } from './types';
 
 export type {
-    MethodName,
-    MethodParams,
-    MethodResult, MopidyAlbumRaw,
-    MopidyArtistRaw, MopidyMethodMap,
-    MopidyPlaybackStateRaw,
-    MopidyPlaylistRefRaw,
-    MopidyTlTrackRaw,
-    MopidyTrackRaw
+  MethodName,
+  MethodParams,
+  MethodResult,
+  MopidyAlbumRaw,
+  MopidyArtistRaw,
+  MopidyImageRaw,
+  MopidyMethodMap,
+  MopidyPlaybackStateRaw,
+  MopidyPlaylistRaw,
+  MopidyRefRaw,
+  MopidySearchResultRaw,
+  MopidyTlTrackRaw,
+  MopidyTrackRaw,
 } from './methods';
 
 export { MopidyHttpTransport } from './http';

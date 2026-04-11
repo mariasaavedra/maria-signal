@@ -13,6 +13,14 @@ import {
   MopidyRpcError,
 } from './rpc/types';
 import {
+  createHistoryService,
+  HistoryService,
+} from './services/history';
+import {
+  createLibraryService,
+  LibraryService,
+} from './services/library';
+import {
   createPlaybackService,
   PlaybackService,
 } from './services/playback';
@@ -41,6 +49,8 @@ export interface MopidyFacade {
   playback: PlaybackService;
   queue: QueueService;
   playlists: PlaylistsService;
+  history: HistoryService;
+  library: LibraryService;
 }
 
 const defaultIdGenerator = (): JsonRpcId => {
@@ -94,5 +104,7 @@ export const createMopidy = (options: CreateMopidyOptions): MopidyFacade => {
     playback: createPlaybackService(client),
     queue: createQueueService(client),
     playlists: createPlaylistsService(client),
+    history: createHistoryService(client),
+    library: createLibraryService(client),
   };
 };

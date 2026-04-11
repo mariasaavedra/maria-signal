@@ -1,15 +1,22 @@
 export { createMopidy, createMopidyClient } from './client';
 
 export type {
-    CreateMopidyOptions, MopidyClient,
-    MopidyFacade
+  CreateMopidyOptions,
+  MopidyClient,
+  MopidyFacade,
 } from './client';
 
 export type {
-    PlaybackState,
-    PlaylistRef,
-    TlTrack,
-    Track
+  Album,
+  Artist,
+  Image,
+  Playlist,
+  PlaybackState,
+  Ref,
+  RefType,
+  SearchResult,
+  TlTrack,
+  Track,
 } from './models';
 
 export * from './rpc';

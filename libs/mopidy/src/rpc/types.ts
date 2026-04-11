@@ -36,7 +36,7 @@ export const isJsonRpcFailure = <TResult>(
 };
 
 export class MopidyTransportError extends Error {
-  readonly cause?: unknown;
+  override readonly cause?: unknown;
 
   constructor(message: string, options?: { cause?: unknown }) {
     super(message);

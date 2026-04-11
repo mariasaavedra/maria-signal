@@ -1,39 +1,37 @@
 import { MopidyClient } from '../client';
-import { PlaybackState, Track } from '../models';
-import { MopidyTrackRaw } from '../rpc/methods';
+import { PlaybackState } from '../models';
+import {
+  MopidyTlTrackRaw,
+  MopidyTrackRaw,
+} from '../rpc/methods';
 
 export interface PlaybackService {
-  play(): Promise<void>;
+  play(tlid?: number | null): Promise<void>;
   pause(): Promise<void>;
+  resume(): Promise<void>;
   stop(): Promise<void>;
   next(): Promise<void>;
   previous(): Promise<void>;
+  seek(timePosition: number): Promise<boolean>;
   getState(): Promise<PlaybackState>;
-  getCurrentTrack(): Promise<Track | null>;
+  getCurrentTrack(): Promise<MopidyTrackRaw | null>;
+  getCurrentTlTrack(): Promise<MopidyTlTrackRaw | null>;
+  getCurrentTlid(): Promise<number | null>;
+  getTimePosition(): Promise<number | null>;
 }
-
-const normalizeTrack = (track: MopidyTrackRaw | null): Track | null => {
-  if (!track || !track.uri) {
-    return null;
-  }
-
-  return {
-    uri: track.uri,
-    name: track.name ?? null,
-    albumName: track.album?.name ?? null,
-    artistNames: track.artists?.map((artist) => artist.name).filter(Boolean) as string[] ?? [],
-    lengthMs: track.length ?? null,
-  };
-};
 
 export const createPlaybackService = (client: MopidyClient): PlaybackService => {
   return {
-    async play() {
-      await client.call('core.playback.play');
+    async play(tlid) {
+      await client.call('core.playback.play', tlid != null ? { tlid } : undefined);
     },
 
     async pause() {
       await client.call('core.playback.pause');
+    },
+
+    async resume() {
+      await client.call('core.playback.resume');
     },
 
     async stop() {
@@ -48,13 +46,28 @@ export const createPlaybackService = (client: MopidyClient): PlaybackService => 
       await client.call('core.playback.previous');
     },
 
+    async seek(timePosition) {
+      return client.call('core.playback.seek', { time_position: timePosition });
+    },
+
     async getState() {
       return client.call('core.playback.get_state');
     },
 
     async getCurrentTrack() {
-      const track = await client.call('core.playback.get_current_track');
-      return normalizeTrack(track);
+      return client.call('core.playback.get_current_track');
     },
-  }
-}
+
+    async getCurrentTlTrack() {
+      return client.call('core.playback.get_current_tl_track');
+    },
+
+    async getCurrentTlid() {
+      return client.call('core.playback.get_current_tlid');
+    },
+
+    async getTimePosition() {
+      return client.call('core.playback.get_time_position');
+    },
+  };
+};

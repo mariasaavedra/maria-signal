@@ -1,40 +1,19 @@
 import { MopidyClient } from '../client';
-import { TlTrack, Track } from '../models';
-import { MopidyTlTrackRaw, MopidyTrackRaw } from '../rpc/methods';
+import { MopidyTlTrackRaw } from '../rpc/methods';
 import { MopidyValidationError } from '../rpc/types';
 
 export interface QueueService {
-  getQueue(): Promise<TlTrack[]>;
-  add(input: { uris: string[]; atPosition?: number | null }): Promise<TlTrack[]>;
+  getTlTracks(): Promise<MopidyTlTrackRaw[]>;
+  add(input: { uris: string[]; at_position?: number | null }): Promise<MopidyTlTrackRaw[]>;
+  remove(criteria: Record<string, unknown>): Promise<MopidyTlTrackRaw[]>;
   clear(): Promise<void>;
+  shuffle(start?: number | null, end?: number | null): Promise<void>;
 }
-
-const normalizeTrack = (track: MopidyTrackRaw | null | undefined): Track | null => {
-  if (!track?.uri) {
-    return null;
-  }
-
-  return {
-    uri: track.uri,
-    name: track.name ?? null,
-    albumName: track.album?.name ?? null,
-    artistNames: track.artists?.map((artist) => artist.name).filter(Boolean) as string[] ?? [],
-    lengthMs: track.length ?? null,
-  };
-};
-
-const normalizeTlTrack = (item: MopidyTlTrackRaw): TlTrack => {
-  return {
-    tlid: item.tlid,
-    track: normalizeTrack(item.track),
-  };
-};
 
 export const createQueueService = (client: MopidyClient): QueueService => {
   return {
-    async getQueue() {
-      const tracks = await client.call('core.tracklist.get_tl_tracks');
-      return tracks.map(normalizeTlTrack);
+    async getTlTracks() {
+      return client.call('core.tracklist.get_tl_tracks');
     },
 
     async add(input) {
@@ -42,16 +21,22 @@ export const createQueueService = (client: MopidyClient): QueueService => {
         throw new MopidyValidationError('Queue add requires at least one URI.');
       }
 
-      const tracks = await client.call('core.tracklist.add', {
+      return client.call('core.tracklist.add', {
         uris: input.uris,
-        at_position: input.atPosition ?? null,
+        at_position: input.at_position ?? null,
       });
+    },
 
-      return tracks.map(normalizeTlTrack);
+    async remove(criteria) {
+      return client.call('core.tracklist.remove', { criteria });
     },
 
     async clear() {
       await client.call('core.tracklist.clear');
+    },
+
+    async shuffle(start, end) {
+      await client.call('core.tracklist.shuffle', { start: start ?? null, end: end ?? null });
     },
   };
 };

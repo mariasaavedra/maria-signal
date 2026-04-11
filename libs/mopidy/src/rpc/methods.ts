@@ -1,45 +1,90 @@
 export type MopidyPlaybackStateRaw = 'playing' | 'paused' | 'stopped';
 
+export interface MopidyRefRaw {
+  __model__?: 'Ref';
+  uri: string;
+  name: string;
+  type?: string | null;
+}
+
 export interface MopidyArtistRaw {
   __model__?: 'Artist';
-  name?: string | null;
   uri?: string | null;
+  name?: string | null;
+  sortname?: string | null;
+  musicbrainz_id?: string | null;
 }
 
 export interface MopidyAlbumRaw {
   __model__?: 'Album';
-  name?: string | null;
   uri?: string | null;
+  name?: string | null;
+  artists?: MopidyArtistRaw[] | null;
+  num_tracks?: number | null;
+  num_discs?: number | null;
+  date?: string | null;
+  musicbrainz_id?: string | null;
 }
 
 export interface MopidyTrackRaw {
   __model__?: 'Track';
-  uri?: string | null;
+  uri: string;
   name?: string | null;
-  length?: number | null;
   artists?: MopidyArtistRaw[] | null;
   album?: MopidyAlbumRaw | null;
+  composers?: MopidyArtistRaw[] | null;
+  performers?: MopidyArtistRaw[] | null;
+  genre?: string | null;
+  track_no?: number | null;
+  disc_no?: number | null;
+  date?: string | null;
+  length?: number | null;
+  bitrate?: number | null;
+  comment?: string | null;
+  musicbrainz_id?: string | null;
+  last_modified?: number | null;
 }
 
 export interface MopidyTlTrackRaw {
   __model__?: 'TlTrack';
   tlid: number;
-  track?: MopidyTrackRaw | null;
+  track: MopidyTrackRaw;
 }
 
-export interface MopidyPlaylistRefRaw {
-  __model__?: 'Ref';
+export interface MopidyPlaylistRaw {
+  __model__?: 'Playlist';
   uri: string;
   name: string;
-  type?: string;
+  tracks?: MopidyTrackRaw[] | null;
+  last_modified?: number | null;
+}
+
+export interface MopidyImageRaw {
+  __model__?: 'Image';
+  uri: string;
+  width?: number | null;
+  height?: number | null;
+}
+
+export interface MopidySearchResultRaw {
+  __model__?: 'SearchResult';
+  uri?: string | null;
+  tracks?: MopidyTrackRaw[] | null;
+  artists?: MopidyArtistRaw[] | null;
+  albums?: MopidyAlbumRaw[] | null;
 }
 
 export interface MopidyMethodMap {
+  // Playback control
   'core.playback.play': {
-    params: undefined;
+    params: { tlid?: number | null } | undefined;
     result: null;
   };
   'core.playback.pause': {
+    params: undefined;
+    result: null;
+  };
+  'core.playback.resume': {
     params: undefined;
     result: null;
   };
@@ -55,6 +100,11 @@ export interface MopidyMethodMap {
     params: undefined;
     result: null;
   };
+  'core.playback.seek': {
+    params: { time_position: number };
+    result: boolean;
+  };
+  // Current track
   'core.playback.get_state': {
     params: undefined;
     result: MopidyPlaybackStateRaw;
@@ -63,30 +113,69 @@ export interface MopidyMethodMap {
     params: undefined;
     result: MopidyTrackRaw | null;
   };
+  'core.playback.get_current_tl_track': {
+    params: undefined;
+    result: MopidyTlTrackRaw | null;
+  };
+  'core.playback.get_current_tlid': {
+    params: undefined;
+    result: number | null;
+  };
+  'core.playback.get_time_position': {
+    params: undefined;
+    result: number | null;
+  };
+  // Tracklist (queue)
   'core.tracklist.get_tl_tracks': {
     params: undefined;
     result: MopidyTlTrackRaw[];
   };
   'core.tracklist.add': {
-    params: {
-      uris: string[];
-      at_position?: number | null;
-    };
+    params: { uris: string[]; at_position?: number | null };
+    result: MopidyTlTrackRaw[];
+  };
+  'core.tracklist.remove': {
+    params: { criteria: Record<string, unknown> };
     result: MopidyTlTrackRaw[];
   };
   'core.tracklist.clear': {
     params: undefined;
     result: null;
   };
+  'core.tracklist.shuffle': {
+    params: { start?: number | null; end?: number | null } | undefined;
+    result: null;
+  };
+  // Playlists
   'core.playlists.as_list': {
     params: undefined;
-    result: MopidyPlaylistRefRaw[];
+    result: MopidyRefRaw[];
   };
   'core.playlists.get_items': {
+    params: { uri: string };
+    result: MopidyRefRaw[] | null;
+  };
+  // History
+  'core.history.get_history': {
+    params: undefined;
+    result: Array<[number, MopidyRefRaw]>;
+  };
+  'core.history.get_length': {
+    params: undefined;
+    result: number;
+  };
+  // Library
+  'core.library.browse': {
+    params: { uri?: string | null };
+    result: MopidyRefRaw[];
+  };
+  'core.library.search': {
     params: {
-      uri: string;
+      query: Record<string, string[]>;
+      uris?: string[] | null;
+      exact?: boolean | null;
     };
-    result: MopidyTrackRaw[];
+    result: MopidySearchResultRaw[];
   };
 }
 

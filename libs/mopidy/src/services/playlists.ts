@@ -1,35 +1,16 @@
 import { MopidyClient } from '../client';
-import { MopidyTrackRaw, MopidyValidationError } from '../index';
-import { PlaylistRef, Track } from '../models';
+import { MopidyRefRaw } from '../rpc/methods';
+import { MopidyValidationError } from '../rpc/types';
 
 export interface PlaylistsService {
-  list(): Promise<PlaylistRef[]>;
-  getItems(uri: string): Promise<Track[]>;
+  list(): Promise<MopidyRefRaw[]>;
+  getItems(uri: string): Promise<MopidyRefRaw[] | null>;
 }
-
-const normalizeTrack = (track: MopidyTrackRaw): Track | null => {
-  if (!track.uri) {
-    return null;
-  }
-
-  return {
-    uri: track.uri,
-    name: track.name ?? null,
-    albumName: track.album?.name ?? null,
-    artistNames: track.artists?.map((artist) => artist.name).filter(Boolean) as string[] ?? [],
-    lengthMs: track.length ?? null,
-  };
-};
 
 export const createPlaylistsService = (client: MopidyClient): PlaylistsService => {
   return {
     async list() {
-      const refs = await client.call('core.playlists.as_list');
-
-      return refs.map((ref) => ({
-        uri: ref.uri,
-        name: ref.name,
-      }));
+      return client.call('core.playlists.as_list');
     },
 
     async getItems(uri: string) {
@@ -37,11 +18,7 @@ export const createPlaylistsService = (client: MopidyClient): PlaylistsService =
         throw new MopidyValidationError('Playlist URI is required.');
       }
 
-      const tracks = await client.call('core.playlists.get_items', { uri });
-
-      return tracks
-        .map(normalizeTrack)
-        .filter((track): track is Track => track !== null);
+      return client.call('core.playlists.get_items', { uri });
     },
   };
 };
