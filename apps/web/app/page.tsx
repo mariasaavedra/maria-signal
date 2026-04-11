@@ -12,9 +12,17 @@ export default function Home() {
 
   const state = data.state;
   const dotColor = state === 'playing' ? 'bg-accent' : state === 'paused' ? 'bg-brand' : 'bg-charcoal/40';
+  const artworkUrl = data.artworkUrl;
 
   return (
     <main className="min-h-screen flex items-center justify-center">
+      {artworkUrl && (
+        <div
+          className="fixed inset-0 -z-10 scale-150 blur-[50px] opacity-50 saturate-200"
+          style={{ backgroundImage: `url(${artworkUrl})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+        />
+      )}
+
       <PlayerCard snapshot={data} onAction={action.mutate} />
 
       <div className="fixed bottom-5 right-5 flex items-center gap-1.5">
