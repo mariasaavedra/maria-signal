@@ -17,7 +17,7 @@ export function ControlButton({
 }: ControlButtonProps) {
   const circle =
     size === 'lg'
-      ? 'w-16 h-16'
+      ? 'w-14 h-14 pl-1'
       : 'w-12 h-12';
 
   const bg = variant === 'white' ? 'bg-light' : 'bg-charcoal';
@@ -25,7 +25,7 @@ export function ControlButton({
   return (
     <button
       onClick={onClick}
-      className={`${circle} ${bg} rounded-full flex items-center justify-center shrink-0`}
+      className={`${circle} ${bg} rounded-full flex items-center justify-center shrink-0 shadow-md`}
     >
       <Image
         src={icon}

@@ -1,9 +1,9 @@
 'use client';
 
+import type { AudioActionRequest, AudioSnapshot } from '@/lib/audio/contract';
 import Image from 'next/image';
 import { ControlButton } from './ControlButton';
 import { ProgressBar } from './ProgressBar';
-import type { AudioSnapshot, AudioActionRequest } from '@/lib/audio/contract';
 
 interface PlayerCardProps {
   snapshot: AudioSnapshot;
@@ -18,17 +18,17 @@ export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
   const duration = track?.length ?? null;
 
   return (
-    <div className="bg-accent rounded-3xl p-6 flex flex-col gap-4 w-[480px]">
+    <div className="bg-slate-200/80 rounded-3xl p-6 flex flex-col gap-6 w-100 shadow-2xl">
       {/* Top row: artwork + title/artist */}
       <div className="flex items-center gap-4">
         {/* Artwork */}
-        <div className="w-32 h-32 rounded-2xl overflow-hidden shrink-0 bg-charcoal/20 flex items-center justify-center">
+        <div className="w-20 h-20 shadow-md rounded-2xl overflow-hidden shrink-0 bg-charcoal/20 flex items-center justify-center">
           {artworkUrl ? (
             <Image
               src={artworkUrl}
               alt={title}
-              width={128}
-              height={128}
+              width={100}
+              height={100}
               className="object-cover w-full h-full"
               unoptimized
             />
@@ -44,9 +44,9 @@ export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
         </div>
 
         {/* Title / artist */}
-        <div className="flex flex-col gap-1 min-w-0">
-          <span className="text-2xl font-bold text-dark leading-tight truncate">{title}</span>
-          <span className="text-base text-charcoal truncate">{artist}</span>
+        <div className="flex flex-col self-center leading-tight  tracking-tighter gap-1 min-w-0">
+          <span className="text-lg font-bold text-dark  truncate">{title}</span>
+          <span className="text-lg text-charcoal truncate">{artist}</span>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
         <ControlButton
           icon="/icons/svg/repeat.svg"
           alt="Repeat"
-          onClick={() => {}}
+          onClick={() => { }}
         />
       </div>
     </div>

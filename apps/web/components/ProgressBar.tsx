@@ -32,14 +32,14 @@ export function ProgressBar({ position, duration, onSeek }: ProgressBarProps) {
           value={pos}
           disabled={dur === 0}
           onChange={(e) => onSeek(Number(e.target.value))}
-          className="w-full h-2 appearance-none rounded-full cursor-pointer disabled:cursor-default
+          className="w-full h-2  shadow-xl appearance-none rounded-full cursor-pointer disabled:cursor-default
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-5
             [&::-webkit-slider-thumb]:h-5
             [&::-webkit-slider-thumb]:rounded-full
             [&::-webkit-slider-thumb]:bg-brand
             [&::-webkit-slider-thumb]:cursor-pointer
-            [&::-webkit-slider-thumb]:shadow-sm"
+            [&::-webkit-slider-thumb]:[box-shadow:0_4px_10px_rgba(0,0,0,0.3)]"
           style={{
             background: `linear-gradient(to right, var(--color-brand) ${pct}%, color-mix(in srgb, var(--color-charcoal) 20%, transparent) ${pct}%)`,
           }}
