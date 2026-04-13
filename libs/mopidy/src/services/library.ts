@@ -29,8 +29,8 @@ export const createLibraryService = (client: MopidyClient): LibraryService => {
     async search(query, uris, exact) {
       return client.call('core.library.search', {
         query,
-        uris: uris ?? null,
-        exact: exact ?? null,
+        ...(uris != null ? { uris } : {}),
+        ...(exact != null ? { exact } : {}),
       });
     },
   };
