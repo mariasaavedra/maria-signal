@@ -1,7 +1,8 @@
 import { MopidyClient } from '../client';
-import { MopidyImageRaw, MopidyRefRaw, MopidySearchResultRaw } from '../rpc/methods';
+import { MopidyImageRaw, MopidyRefRaw, MopidySearchResultRaw, MopidyTrackRaw } from '../rpc/methods';
 
 export interface LibraryService {
+  lookup(uris: string[]): Promise<Record<string, MopidyTrackRaw[]>>;
   browse(uri?: string | null): Promise<MopidyRefRaw[]>;
   getImages(uris: string[]): Promise<Record<string, MopidyImageRaw[]>>;
   search(
@@ -13,6 +14,10 @@ export interface LibraryService {
 
 export const createLibraryService = (client: MopidyClient): LibraryService => {
   return {
+    async lookup(uris) {
+      return client.call('core.library.lookup', { uris });
+    },
+
     async browse(uri) {
       return client.call('core.library.browse', { uri: uri ?? null });
     },

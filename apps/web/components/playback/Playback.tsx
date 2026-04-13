@@ -1,21 +1,21 @@
 'use client';
 
-import type { AudioActionRequest, AudioSnapshot } from '@/lib/audio/contract';
+import type { PlaybackActionRequest, PlaybackSnapshot } from '@/lib/audio/contract';
 import Image from 'next/image';
-import { ControlButton } from './ControlButton';
-import { ProgressBar } from './ProgressBar';
+import { ControlButton } from '@/components/ControlButton';
+import { ProgressBar } from '@/components/ProgressBar';
 
-interface PlayerCardProps {
-  snapshot: AudioSnapshot;
-  onAction: (action: AudioActionRequest) => void;
+interface PlaybackProps {
+  playback: PlaybackSnapshot;
+  onPlaybackAction: (action: PlaybackActionRequest) => void;
 }
 
-export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
-  const { state, track, timePosition, artworkUrl } = snapshot;
+export function Playback({ playback, onPlaybackAction }: PlaybackProps) {
+  const { state, track, position, artworkUrl } = playback;
   const isPlaying = state === 'playing';
   const title = track?.name ?? 'No track';
-  const artist = track?.artists?.[0]?.name ?? 'Unknown artist';
-  const duration = track?.length ?? null;
+  const artist = track?.artist ?? 'Unknown artist';
+  const duration = track?.duration ?? null;
 
   return (
     <div className="bg-slate-200/80 rounded-3xl p-6 flex flex-col gap-6 w-100 shadow-2xl">
@@ -44,17 +44,17 @@ export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
         </div>
 
         {/* Title / artist */}
-        <div className="flex flex-col self-center leading-tight  tracking-tighter gap-1 min-w-0">
-          <span className="text-lg font-bold text-dark  truncate">{title}</span>
+        <div className="flex flex-col self-center leading-tight tracking-tighter gap-1 min-w-0">
+          <span className="text-lg font-bold text-dark truncate">{title}</span>
           <span className="text-lg text-charcoal truncate">{artist}</span>
         </div>
       </div>
 
       {/* Progress */}
       <ProgressBar
-        position={timePosition}
+        position={position}
         duration={duration}
-        onSeek={(ms) => onAction({ action: 'seek', timePosition: ms })}
+        onSeek={(ms) => onPlaybackAction({ action: 'seek', position: ms })}
       />
 
       {/* Controls */}
@@ -62,29 +62,29 @@ export function PlayerCard({ snapshot, onAction }: PlayerCardProps) {
         <ControlButton
           icon="/icons/svg/shuffle 1.svg"
           alt="Shuffle"
-          onClick={() => onAction({ action: 'queue.shuffle' })}
+          onClick={() => onPlaybackAction({ action: 'shuffle' })}
         />
         <ControlButton
           icon="/icons/svg/skip-back.svg"
           alt="Previous"
-          onClick={() => onAction({ action: 'previous' })}
+          onClick={() => onPlaybackAction({ action: 'previous' })}
         />
         <ControlButton
           icon={isPlaying ? '/icons/svg/pause.svg' : '/icons/svg/play.svg'}
           alt={isPlaying ? 'Pause' : 'Play'}
-          onClick={() => onAction({ action: isPlaying ? 'pause' : 'play' })}
+          onClick={() => onPlaybackAction({ action: isPlaying ? 'pause' : 'play' })}
           size="lg"
           variant="white"
         />
         <ControlButton
           icon="/icons/svg/skip-forward.svg"
           alt="Next"
-          onClick={() => onAction({ action: 'next' })}
+          onClick={() => onPlaybackAction({ action: 'next' })}
         />
         <ControlButton
           icon="/icons/svg/repeat.svg"
           alt="Repeat"
-          onClick={() => { }}
+          onClick={() => {}}
         />
       </div>
     </div>

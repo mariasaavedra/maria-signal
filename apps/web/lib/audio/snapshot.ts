@@ -1,12 +1,20 @@
 import { mopidy } from '@/lib/mopidy';
-import type { AudioSnapshot } from '@/lib/audio/contract';
+import type { MopidyTrackRaw } from '@m7/mopidy';
+import type { NormalizedTrack, PlaybackSnapshot } from '@/lib/audio/contract';
 
-export async function getAudioSnapshot(): Promise<AudioSnapshot> {
-  const [state, track, tlTrack, tlid, timePosition] = await Promise.all([
+function normalizeTrack(raw: MopidyTrackRaw): NormalizedTrack {
+  return {
+    uri: raw.uri,
+    name: raw.name ?? 'Unknown track',
+    artist: raw.artists?.[0]?.name ?? 'Unknown artist',
+    duration: raw.length ?? null,
+  };
+}
+
+export async function getPlaybackSnapshot(): Promise<PlaybackSnapshot> {
+  const [state, track, timePosition] = await Promise.all([
     mopidy.playback.getState(),
     mopidy.playback.getCurrentTrack(),
-    mopidy.playback.getCurrentTlTrack(),
-    mopidy.playback.getCurrentTlid(),
     mopidy.playback.getTimePosition(),
   ]);
 
@@ -18,5 +26,10 @@ export async function getAudioSnapshot(): Promise<AudioSnapshot> {
     artworkUrl = best?.uri ?? null;
   }
 
-  return { state, track, tlTrack, tlid, timePosition, artworkUrl };
+  return {
+    state,
+    track: track ? normalizeTrack(track) : null,
+    position: timePosition,
+    artworkUrl,
+  };
 }

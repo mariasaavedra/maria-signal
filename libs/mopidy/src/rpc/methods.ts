@@ -165,6 +165,10 @@ export interface MopidyMethodMap {
     result: number;
   };
   // Library
+  'core.library.lookup': {
+    params: { uris: string[] };
+    result: Record<string, MopidyTrackRaw[]>;
+  };
   'core.library.browse': {
     params: { uri?: string | null };
     result: MopidyRefRaw[];

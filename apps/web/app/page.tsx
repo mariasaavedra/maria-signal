@@ -1,11 +1,11 @@
 'use client';
 
-import { PlayerCard } from '@/components/PlayerCard';
-import { useAudio, useAudioAction } from '@/lib/audio/hooks';
+import { Playback } from '@/components/playback/Playback';
+import { usePlayback, usePlaybackAction } from '@/lib/audio/hooks';
 
 export default function Home() {
-  const { data, isLoading, error } = useAudio();
-  const action = useAudioAction();
+  const { data, isLoading, error } = usePlayback();
+  const action = usePlaybackAction();
 
   if (isLoading || !data) return null;
   if (error) return <div className="text-sm text-red-500">{(error as Error).message}</div>;
@@ -23,7 +23,7 @@ export default function Home() {
         />
       )}
 
-      <PlayerCard snapshot={data} onAction={action.mutate} />
+      <Playback playback={data} onPlaybackAction={action.mutate} />
 
       <div className="fixed bottom-5 right-5 flex items-center gap-1.5">
         <span className={`w-1.5 h-1.5 rounded-full ${dotColor} ${state === 'playing' ? 'animate-pulse' : ''}`} />

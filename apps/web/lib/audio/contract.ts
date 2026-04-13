@@ -1,39 +1,46 @@
-import type { PlaybackState, Track, TlTrack } from '@m7/mopidy';
+// Normalized domain types — no raw Mopidy imports
 
-// Local aliases
-export type AudioCriteria = Record<string, unknown>;
-export type AudioQuery = Record<string, string[]>;
+export interface NormalizedTrack {
+  uri: string;
+  name: string;
+  artist: string;
+  duration: number | null;
+}
 
-// Snapshot
-export interface AudioSnapshot {
-  state: PlaybackState;
-  track: Track | null;
-  tlTrack: TlTrack | null;
-  tlid: number | null;
-  timePosition: number | null;
+export interface PlaybackSnapshot {
+  state: 'playing' | 'paused' | 'stopped';
+  track: NormalizedTrack | null;
+  position: number | null;
   artworkUrl: string | null;
 }
 
-// Action union
-export type AudioActionRequest =
-  | { action: 'play'; tlid?: number }
+export interface PlaylistSummary {
+  uri: string;
+  name: string;
+}
+
+export interface PlaylistDetail {
+  uri: string;
+  name: string;
+  tracks: NormalizedTrack[];
+}
+
+export interface SearchResults {
+  query: string;
+  tracks: NormalizedTrack[];
+}
+
+// Playback action union (app-oriented)
+export type PlaybackActionRequest =
+  | { action: 'play' }
   | { action: 'pause' }
-  | { action: 'resume' }
-  | { action: 'stop' }
-  | { action: 'next' }
   | { action: 'previous' }
-  | { action: 'seek'; timePosition: number }
-  | { action: 'queue.add'; uris: string[]; atPosition?: number }
-  | { action: 'queue.clear' }
-  | { action: 'queue.remove'; criteria: AudioCriteria }
-  | { action: 'queue.getTlTracks' }
-  | { action: 'queue.shuffle'; start?: number; end?: number }
-  | { action: 'playlists.list' }
-  | { action: 'playlists.getItems'; uri: string }
-  | { action: 'history.getHistory' }
-  | { action: 'history.getLength' }
-  | { action: 'library.browse'; uri?: string }
-  | { action: 'library.search'; query: AudioQuery; uris?: string[]; exact?: boolean };
+  | { action: 'next' }
+  | { action: 'seek'; position: number }
+  | { action: 'playTrack'; uri: string }
+  | { action: 'addToQueue'; uri: string }
+  | { action: 'startPlaylist'; uri: string }
+  | { action: 'shuffle' };
 
 // Response envelope
 export interface AudioSuccess<T = undefined> {

@@ -1,10 +1,10 @@
 import type {
-    AudioActionRequest,
-    AudioActionResponse,
-    AudioSnapshot,
+  AudioResponse,
+  PlaybackActionRequest,
+  PlaybackSnapshot,
 } from './contract';
 
-export async function getAudioSnapshot(): Promise<AudioSnapshot> {
+export async function getPlaybackSnapshot(): Promise<PlaybackSnapshot> {
   const res = await fetch('/api/audio');
 
   if (!res.ok) throw new Error(`Failed: ${res.status}`);
@@ -16,9 +16,9 @@ export async function getAudioSnapshot(): Promise<AudioSnapshot> {
   return json.data;
 }
 
-export async function postAudioAction(
-  input: AudioActionRequest
-): Promise<AudioActionResponse> {
+export async function postPlaybackAction(
+  input: PlaybackActionRequest
+): Promise<AudioResponse> {
   const res = await fetch('/api/audio', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
