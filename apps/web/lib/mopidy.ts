@@ -1,11 +1,12 @@
-// lib/mopidy.ts
 import { createMopidy } from '@m7/mopidy';
 import 'server-only';
 
-const url = process.env.MOPIDY_RPC_URL;
+export function createMopidyClient() {
+  const url = process.env.MOPIDY_RPC_URL;
 
-if (!url) {
-  throw new Error('Missing MOPIDY_RPC_URL');
+  if (!url) {
+    throw new Error('Missing MOPIDY_RPC_URL');
+  }
+
+  return createMopidy({ url });
 }
-
-export const mopidy = createMopidy({ url });

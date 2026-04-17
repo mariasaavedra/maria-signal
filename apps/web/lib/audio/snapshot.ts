@@ -1,6 +1,9 @@
-import { mopidy } from '@/lib/mopidy';
-import type { MopidyTrackRaw } from '@m7/mopidy';
 import type { NormalizedTrack, PlaybackSnapshot } from '@/lib/audio/contract';
+import { createMopidyClient } from '@/lib/mopidy';
+import type { MopidyTrackRaw } from '@m7/mopidy';
+
+
+const mopidy = createMopidyClient();
 
 function normalizeTrack(raw: MopidyTrackRaw): NormalizedTrack {
   return {

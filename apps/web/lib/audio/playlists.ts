@@ -1,7 +1,9 @@
-import 'server-only';
-import { mopidy } from '@/lib/mopidy';
-import type { MopidyTrackRaw } from '@m7/mopidy';
 import type { NormalizedTrack, PlaylistDetail, PlaylistSummary } from '@/lib/audio/contract';
+import { createMopidyClient } from '@/lib/mopidy';
+import type { MopidyTrackRaw } from '@m7/mopidy';
+import 'server-only';
+
+const mopidy = createMopidyClient();
 
 function normalizeTrack(raw: MopidyTrackRaw): NormalizedTrack {
   return {

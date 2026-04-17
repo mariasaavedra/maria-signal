@@ -1,9 +1,10 @@
-import { mopidy } from '@/lib/mopidy';
 import type { PlaybackActionRequest } from '@/lib/audio/contract';
+import { createMopidyClient } from '@/lib/mopidy';
 
 export async function handleAudioAction(
   input: PlaybackActionRequest
 ): Promise<{ ok: true; data?: unknown }> {
+  const mopidy = createMopidyClient();
   switch (input.action) {
     case 'play':
       await mopidy.playback.play();
