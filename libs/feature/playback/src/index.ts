@@ -1,3 +1,3 @@
-export * from './control-button';
-export * from './progress-bar';
-export * from './playback';
+export * from './components/control-button';
+export * from './components/progress-bar';
+export * from './components/playback';
