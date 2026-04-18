@@ -1,0 +1,11 @@
+[Unit]
+Description=Audio Control App
+After=network-online.target mopidy.service
+
+[Service]
+User=audio
+ExecStart=/usr/local/bin/node server.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

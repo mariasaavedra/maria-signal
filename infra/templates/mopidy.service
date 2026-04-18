@@ -1,0 +1,11 @@
+[Unit]
+Description=Mopidy Music Server
+After=network-online.target sound.target
+
+[Service]
+User=audio
+ExecStart=/home/audio/mopidy/venv/bin/mopidy --config /etc/mopidy/mopidy.conf
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
