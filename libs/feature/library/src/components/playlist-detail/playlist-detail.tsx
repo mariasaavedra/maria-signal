@@ -28,14 +28,14 @@ export function PlaylistDetail({
         <h1 className="text-xl font-bold text-dark truncate">{detail.name}</h1>
         <button
           onClick={onStartPlaylist}
-          className="text-sm px-3 py-1.5 rounded-xl bg-brand text-white hover:bg-brand/80 shrink-0"
+          className="text-lg px-3 py-1.5 rounded-xl bg-brand text-white hover:bg-brand/80 shrink-0"
         >
           Play all
         </button>
       </div>
 
       {detail.tracks.length === 0 ? (
-        <p className="text-sm text-charcoal/50 px-3">This playlist is empty.</p>
+        <p className="text-lg text-charcoal/50 px-3">This playlist is empty.</p>
       ) : (
         <div className="flex flex-col">
           {detail.tracks.map((track) => (
@@ -50,7 +50,7 @@ export function PlaylistDetail({
             <button
               onClick={onLoadMore}
               disabled={isLoadingMore}
-              className="mt-3 mx-3 py-2 text-sm text-charcoal/60 hover:text-charcoal disabled:opacity-40"
+              className="mt-3 mx-3 py-2 text-lg text-charcoal/60 hover:text-charcoal disabled:opacity-40"
             >
               {isLoadingMore ? 'Loading…' : 'Load more'}
             </button>

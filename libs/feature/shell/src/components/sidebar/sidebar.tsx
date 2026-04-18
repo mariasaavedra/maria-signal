@@ -6,9 +6,6 @@ import { usePathname } from 'next/navigation';
 
 const NAV = [
   { href: '/', label: 'Home', icon: '/icons/svg/music.svg' },
-  { href: '/library', label: 'Library', icon: '/icons/svg/music.svg' },
-  { href: '/recent', label: 'Recent', icon: '/icons/svg/bell.svg' },
-  { href: '/settings', label: 'Settings', icon: '/icons/svg/more-vertical.svg' },
 ] as const;
 
 export function Sidebar() {
@@ -21,7 +18,7 @@ export function Sidebar() {
         <div className="w-7 h-7 bg-dark rounded-md flex items-center justify-center shrink-0">
           <Image src="/icons/svg/music.svg" alt="" width={13} height={13} className="invert" />
         </div>
-        <span className="text-sm font-semibold text-dark tracking-tight">Monochrome</span>
+        <span className="text-lg font-semibold text-dark tracking-tight">Monochrome</span>
       </div>
 
       {NAV.map(({ href, label, icon }) => {
@@ -30,7 +27,7 @@ export function Sidebar() {
           <Link
             key={href}
             href={href}
-            className={`flex items-center gap-2.5 px-2 py-2 rounded-lg text-sm transition-colors ${
+            className={`flex items-center gap-2.5 px-2 py-2 rounded-lg text-lg transition-colors ${
               isActive ? 'bg-dark text-light font-medium' : 'text-charcoal hover:bg-charcoal/8'
             }`}
           >

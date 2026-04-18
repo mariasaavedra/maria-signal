@@ -1,7 +1,7 @@
 'use client';
 
-import type { NormalizedTrack } from '@m7/audio-os/shared/types';
 import { TrackRow } from '@m7/audio-os/feature/library';
+import type { NormalizedTrack } from '@m7/audio-os/shared/types';
 
 interface SearchResultsProps {
   tracks: NormalizedTrack[];
@@ -24,7 +24,7 @@ export function SearchResults({
 }: SearchResultsProps) {
   if (tracks.length === 0) {
     return (
-      <p className="text-sm text-charcoal/50 px-3">
+      <p className="text-lg text-charcoal/50 px-3">
         No results for &ldquo;{query}&rdquo;.
       </p>
     );
@@ -44,7 +44,7 @@ export function SearchResults({
         <button
           onClick={onLoadMore}
           disabled={isLoadingMore}
-          className="mt-3 mx-3 py-2 text-sm text-charcoal/60 hover:text-charcoal disabled:opacity-40"
+          className="mt-3 mx-3 py-2 text-lg text-charcoal/60 hover:text-charcoal disabled:opacity-40"
         >
           {isLoadingMore ? 'Loading…' : 'Load more'}
         </button>

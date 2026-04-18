@@ -40,8 +40,8 @@ export function AlbumCard({ name, artist, year, artworkUrl, onClick }: AlbumCard
         )}
       </div>
       <div className="min-w-0 px-0.5">
-        <p className="text-sm font-medium text-dark truncate">{name}</p>
-        {subtitle && <p className="text-xs text-charcoal/55 truncate">{subtitle}</p>}
+        <p className="text-lg font-medium text-dark truncate">{name}</p>
+        {subtitle && <p className="text-base text-charcoal/55 truncate">{subtitle}</p>}
       </div>
     </button>
   );

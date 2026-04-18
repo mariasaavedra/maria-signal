@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useSearch, usePlaybackAction } from '@/lib/audio/hooks';
+import { usePlaybackAction, useSearch } from '@/lib/audio/hooks';
 import { SearchBox, SearchResults } from '@m7/audio-os/feature/search';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
@@ -27,7 +27,7 @@ export default function SearchPage() {
 
       <div className="mt-4">
         {isFetching && !isFetchingNextPage && (
-          <p className="text-sm text-charcoal/50 px-3">Searching…</p>
+          <p className="text-lg text-charcoal/50 px-3">Searching…</p>
         )}
         {!isFetching && data && (
           <SearchResults

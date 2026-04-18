@@ -28,7 +28,7 @@ export function SearchBox({ value, onChange }: SearchBoxProps) {
       value={local}
       onChange={handleChange}
       placeholder="Search tracks…"
-      className="w-full rounded-xl px-4 py-2.5 text-sm bg-charcoal/10 text-dark placeholder:text-charcoal/40 outline-none focus:ring-2 focus:ring-brand/40"
+      className="w-full rounded-xl px-4 py-2.5 text-lg bg-charcoal/10 text-dark placeholder:text-charcoal/40 outline-none focus:ring-2 focus:ring-brand/40"
     />
   );
 }

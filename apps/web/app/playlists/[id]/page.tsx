@@ -1,8 +1,8 @@
 'use client';
 
-import { use } from 'react';
-import { usePlaylistDetail, usePlaybackAction } from '@/lib/audio/hooks';
+import { usePlaybackAction, usePlaylistDetail } from '@/lib/audio/hooks';
 import { PlaylistDetail } from '@m7/audio-os/feature/library';
+import { use } from 'react';
 
 export default function PlaylistDetailPage({
   params,
@@ -14,7 +14,7 @@ export default function PlaylistDetailPage({
   const action = usePlaybackAction();
 
   if (isLoading) return null;
-  if (error) return <div className="text-sm text-red-500">{(error as Error).message}</div>;
+  if (error) return <div className="text-lg text-red-500">{(error as Error).message}</div>;
   if (!data) return null;
 
   const firstPage = data.pages[0];

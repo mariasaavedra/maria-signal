@@ -19,10 +19,10 @@ export function PlayerBar({ snapshot, onAction }: PlayerBarProps) {
   const isPaused = state === 'paused';
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 h-20 bg-light/90 backdrop-blur-md border-t border-charcoal/10 z-50 flex items-center px-4 gap-4">
+    <div className="fixed bottom-0 left-0 right-0 h-fit py-8 bg-light/90 backdrop-blur-md border-t border-charcoal/10 z-50 flex items-center px-4 gap-4">
       {/* Left: artwork + track info */}
       <div className="flex items-center gap-3 w-52 shrink-0">
-        <div className="w-11 h-11 rounded-lg overflow-hidden bg-charcoal/10 flex items-center justify-center shrink-0">
+        <div className="w-25 h-25 rounded-lg overflow-hidden bg-charcoal/10 flex items-center justify-center shrink-0">
           {artworkUrl ? (
             <Image
               src={artworkUrl}
@@ -37,8 +37,8 @@ export function PlayerBar({ snapshot, onAction }: PlayerBarProps) {
           )}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-dark truncate">{track?.name ?? 'Select a song'}</p>
-          {track && <p className="text-xs text-charcoal/60 truncate">{track.artist}</p>}
+          <p className="text-lg font-medium text-dark truncate">{track?.name ?? 'Select a song'}</p>
+          {track && <p className="text-base text-charcoal/60 truncate">{track.artist}</p>}
         </div>
       </div>
 

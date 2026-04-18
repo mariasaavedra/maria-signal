@@ -1,6 +1,6 @@
 'use client';
 
-import { usePlaylists, usePlaybackAction } from '@/lib/audio/hooks';
+import { usePlaybackAction, usePlaylists } from '@/lib/audio/hooks';
 import { PlaylistList } from '@m7/audio-os/feature/library';
 
 export default function PlaylistsPage() {
@@ -8,7 +8,7 @@ export default function PlaylistsPage() {
   const action = usePlaybackAction();
 
   if (isLoading) return null;
-  if (error) return <div className="text-sm text-red-500">{(error as Error).message}</div>;
+  if (error) return <div className="text-lg text-red-500">{(error as Error).message}</div>;
 
   return (
     <main className="min-h-screen p-6 max-w-lg mx-auto">

@@ -20,7 +20,7 @@ export function ProgressBar({ position, duration, onSeek }: ProgressBarProps) {
 
   return (
     <div className="flex items-center gap-3 w-full">
-      <span className="text-xs tabular-nums text-charcoal/70 w-10 text-right">
+      <span className="text-base tabular-nums text-charcoal/70 w-10 text-right">
         {formatMs(pos)}
       </span>
 
@@ -46,7 +46,7 @@ export function ProgressBar({ position, duration, onSeek }: ProgressBarProps) {
         />
       </div>
 
-      <span className="text-xs tabular-nums text-charcoal/70 w-10">
+      <span className="text-base tabular-nums text-charcoal/70 w-10">
         {dur > 0 ? formatMs(dur) : '--:--'}
       </span>
     </div>
