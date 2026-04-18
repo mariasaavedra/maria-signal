@@ -6,7 +6,7 @@ ROOT_DIR="$(cd "$SCRIPT_DIR/../../.." && pwd)"
 
 OUT_DIR="$ROOT_DIR/apps/web/dist/artifact-out"
 TIMESTAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-TARBALL="$ROOT_DIR/apps/web/dist/deck-${TIMESTAMP}-linux-arm64.tar.gz"
+TARBALL="$ROOT_DIR/apps/web/dist/web-${TIMESTAMP}-linux-arm64.tar.gz"
 
 DEPLOY_SCRIPT="$SCRIPT_DIR/deploy-artifact.sh"
 

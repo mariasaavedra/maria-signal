@@ -129,7 +129,7 @@ bash apps/web/scripts/package-artifact.sh
 What the script does:
 1. Runs `docker buildx build --platform linux/arm64` targeting `Dockerfile.artifact`, exporting the standalone directory to `apps/web/dist/artifact-out/`.
 2. Validates the expected output files are present (`server.js`, `public/`, `.next/static/`).
-3. Packages everything into a timestamped tarball: `apps/web/dist/deck-<TIMESTAMP>-linux-arm64.tar.gz`.
+3. Packages everything into a timestamped tarball: `apps/web/dist/web-<TIMESTAMP>-linux-arm64.tar.gz`.
 4. Cleans up the intermediate output directory.
 5. Prints an `scp` command to copy the tarball to `audio@audio-os.local`.
 
@@ -147,7 +147,7 @@ Build + deploy latest artifact:
 
 Or deploy a specific tarball:
 
-`bash apps/web/scripts/deploy-artifact.sh apps/web/dist/deck-<TIMESTAMP>-linux-arm64.tar.gz`
+`bash apps/web/scripts/deploy-artifact.sh apps/web/dist/web-<TIMESTAMP>-linux-arm64.tar.gz`
 
 The deploy script will:
 

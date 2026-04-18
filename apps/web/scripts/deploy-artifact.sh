@@ -11,7 +11,7 @@ APP_SUBDIR="standalone/apps/web"
 SERVICE_NAME="web"
 
 latest_tarball() {
-  ls -t "$DIST_DIR"/deck-*-linux-arm64.tar.gz 2>/dev/null | head -n 1
+  ls -t "$DIST_DIR"/web-*-linux-arm64.tar.gz 2>/dev/null | head -n 1
 }
 
 TARBALL="${1:-}"
