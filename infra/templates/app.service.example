@@ -4,8 +4,13 @@ After=network-online.target mopidy.service
 
 [Service]
 User=audio
-ExecStart=/usr/local/bin/node server.js
+WorkingDirectory=/home/audio/app/current/.next/standalone
+ExecStart=/usr/bin/node apps/web/server.js
 Restart=always
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOSTNAME=0.0.0.0
+Environment=MOPIDY_RPC_URL=http://audio-os.local:6680/mopidy/rpc
 
 [Install]
 WantedBy=multi-user.target

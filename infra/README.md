@@ -7,7 +7,7 @@ A reproducible setup for a Raspberry Pi that runs:
 - Mopidy (audio playback)
 - Mopidy-Tidal (streaming)
 - ALSA (audio output)
-- Node app (control layer, optional)
+- Next.js web application (`apps/web`)
 
 This repo defines the **base machine layer**, not the app.
 

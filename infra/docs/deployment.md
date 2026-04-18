@@ -21,9 +21,11 @@ sudo ./install.sh
 
 ## App Deployment
 
+Build from the monorepo root. The standalone output includes static assets and the server entrypoint.
+
 ```bash
 npm run build
-tar -czf app.tar.gz .next/standalone .next/static public
+tar -czf app.tar.gz .next/standalone
 scp app.tar.gz audio@audio-os:~
 ```
 
@@ -34,6 +36,8 @@ tar -xzf app.tar.gz -C ~/app/releases/<version>
 ln -sfn ~/app/releases/<version> ~/app/current
 systemctl restart app
 ```
+
+The standalone server entrypoint is at `apps/web/server.js` inside the extracted directory.
 
 ## Principle
 

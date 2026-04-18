@@ -2,7 +2,7 @@
 
 ## Overview
 
-Node App (optional)
+Next.js App (apps/web, port 3000)
     ↓
 Mopidy (HTTP RPC)
     ↓
