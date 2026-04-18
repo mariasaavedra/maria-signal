@@ -6,9 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **This is a monorepo** for applications and libraries that interact with the **audio-os** service (a separate server that runs the Mopidy music server).
 
-Currently contains:
+**Apps:**
 - `apps/web` - Next.js web player interface
-- `libs/mopidy` - Type-safe Mopidy RPC client library
+
+**Libraries:**
+- `libs/mopidy` - Type-safe Mopidy RPC client library (1:1 mapping to Mopidy Core API)
+- `libs/feature` - Feature modules (shell, library, playback, search) with React components
+- `libs/shared` - Shared domain types, utilities, and constants
+- `libs/ui` - Reusable UI component library
 
 This monorepo is designed to host multiple apps and shared libraries that communicate with the audio-os service.
 
@@ -18,19 +23,33 @@ This monorepo is designed to host multiple apps and shared libraries that commun
 - TypeScript (strict mode)
 - TanStack Query (React Query) for data fetching
 - Tailwind CSS 4
-- Custom `@m7/mopidy` library for Mopidy JSON-RPC communication
+- npm workspaces for monorepo management
 
 ## Monorepo Structure
 
 ```
 apps/
-  web/           # Next.js frontend application
+  web/                    # Next.js frontend application
 libs/
-  mopidy/        # Type-safe Mopidy RPC client library
+  mopidy/                 # Type-safe Mopidy RPC client library
+  feature/
+    shell/                # App shell (sidebar, top bar)
+    library/              # Playlist and album browsing components
+    playback/             # Playback control components
+    search/               # Search interface components
+  shared/
+    types/                # Domain types (NormalizedTrack, PlaybackSnapshot, etc.)
+    utils/                # Shared utility functions
+    constants/            # Shared constants
+    infra/                # Infrastructure scripts for Raspberry Pi deployment
+  ui/                     # Reusable UI primitives (pending implementation)
 ```
 
 Path aliases are configured in `tsconfig.base.json`:
-- `@m7/mopidy` → `libs/mopidy/src/index.ts`
+- `@m7/audio-os/mopidy` → `libs/mopidy/src/index.ts`
+- `@m7/audio-os/feature/{module}` → `libs/feature/{module}/src/index.ts`
+- `@m7/audio-os/shared/{module}` → `libs/shared/{module}/src/index.ts`
+- `@m7/audio-os/ui/{module}` → `libs/ui/src/{module}/index.ts`
 
 ## Development Commands
 
@@ -60,9 +79,14 @@ npm run start:standalone   # uses standalone build (from apps/web)
 
 **Type checking:**
 ```bash
-npm run typecheck
+npm run typecheck              # entire monorepo
+npm run typecheck:web          # apps/web only
+npm run typecheck:mopidy       # libs/mopidy only
+npm run typecheck:feature      # libs/feature only
+npm run typecheck:ui           # libs/ui only
+npm run typecheck:shared       # libs/shared only
 ```
-Runs TypeScript compiler in no-emit mode across the entire monorepo.
+Runs TypeScript compiler in no-emit mode across specified packages.
 
 **Linting:**
 ```bash
@@ -74,9 +98,13 @@ npm run lint -w apps/web
 # Run commands in specific workspace
 npm run <script> -w apps/web
 npm run <script> -w libs/mopidy
+npm run <script> -w libs/feature
+npm run <script> -w libs/shared
+npm run <script> -w libs/ui
 
 # Install dependencies in specific workspace
 npm install <package> -w apps/web
+npm install <package> -w libs/mopidy
 ```
 
 **Clean all dependencies:**
@@ -97,25 +125,42 @@ The application follows a layered architecture to separate concerns:
    - Services: `playback`, `queue`, `playlists`, `history`, `library`
    - See `libs/mopidy/README.md` for full API documentation
 
-2. **Audio Business Logic** (`apps/web/lib/audio/`)
-   - `contract.ts`: Normalized domain types (camelCase, app-oriented)
+2. **Shared Domain Layer** (`libs/shared/`)
+   - `types/`: Normalized domain types (camelCase, app-oriented)
+     - `NormalizedTrack`: Simplified track representation
+     - `PlaybackSnapshot`: Current playback state with track, position, and artwork
+     - `PlaybackActionRequest`: Union type for all playback actions
+     - `PlaylistSummary` / `PlaylistDetail`: Playlist representations
+   - `utils/`: Shared utility functions
+   - `constants/`: Shared constants
+   - `infra/`: Infrastructure scripts for Raspberry Pi audio-os deployment
+
+3. **Audio Business Logic** (`apps/web/lib/audio/`)
+   - `contract.ts`: Re-exports domain types from `libs/shared/types` (migration in progress)
    - `snapshot.ts`: Transforms raw Mopidy data into `PlaybackSnapshot`
    - `handlers.ts`: Action handlers that orchestrate Mopidy calls
    - `api.ts`: Client-side fetch functions
-   - `hooks.ts`: React Query hooks (`usePlayback`, `usePlaybackAction`, etc.)
+   - `hooks.ts`: React Query hooks (`usePlayback`, `usePlaybackAction`, `usePlaylists`, etc.)
+   - `playlists.ts`: Playlist fetching logic
+   - `search.ts`: Search functionality
+   - `encoding.ts`: URI encoding utilities
+   - `errors.ts`: Error handling utilities
 
-3. **API Routes** (`apps/web/app/api/`)
+4. **API Routes** (`apps/web/app/api/`)
    - `/api/audio` (GET): Returns current playback snapshot
    - `/api/audio` (POST): Executes playback actions
-   - `/api/playlists`: List playlists
-   - `/api/playlists/[id]`: Get playlist tracks (paginated)
-   - `/api/search`: Search tracks (paginated)
+   - `/api/playlists` (GET): List playlists
+   - `/api/playlists/[id]` (GET): Get playlist tracks (paginated)
+   - `/api/search` (GET): Search tracks (paginated)
 
-4. **UI Components** (`apps/web/components/`)
-   - `playback/`: Playback controls and progress bar
-   - `playlists/`: Playlist browsing UI
-   - `search/`: Search interface with infinite scroll
-   - `ui/`: Reusable UI primitives
+5. **Feature Components** (`libs/feature/`)
+   - `shell/`: App shell components (sidebar, top bar)
+   - `library/`: Playlist and album browsing components (playlist-list, playlist-detail, album-card, track-row)
+   - `playback/`: Playback control components
+   - `search/`: Search interface components with infinite scroll
+
+6. **UI Primitives** (`libs/ui/`)
+   - Reusable UI component library (in early stages)
 
 ### Server-Side vs Client-Side
 
@@ -134,22 +179,34 @@ MOPIDY_RPC_URL=http://audio-os.local:6680/mopidy/rpc
 
 For production, inject the variable via systemd, Docker, or your process manager. The app will return a 500 at request time if the variable is missing — it does not fail at startup.
 
-The Next.js config:
-- Transpiles `@m7/mopidy` package
+The Next.js config (`apps/web/next.config.ts`):
+- Transpiles all monorepo packages: `@m7/audio-os-mopidy`, `@m7/audio-os-feature`, `@m7/audio-os-shared`, `@m7/audio-os-ui`
 - Outputs a standalone build for deployment
 - Sets `outputFileTracingRoot` for monorepo support
+- Includes postbuild script to copy static assets to standalone build
 
 **Important**: This monorepo contains client applications only. The audio-os service (which runs Mopidy) is a separate server that must be running and accessible for the applications to function.
 
-### Working with the Mopidy Library
+### Working with Libraries
 
-When making changes to `libs/mopidy`, understand that:
+**Mopidy Client (`libs/mopidy/`):**
 - It's a **1:1 mapping** to Mopidy Core API (no normalization)
 - All types use snake_case to match Mopidy wire format
 - Method names follow the pattern: `mopidy.{service}.{method}()`
 - The library exports both high-level facades and low-level `MopidyClient`
+- Transformation to app-friendly types happens in `apps/web/lib/audio/snapshot.ts` and related files
 
-Transformation to app-friendly types happens in `apps/web/lib/audio/snapshot.ts` and related files.
+**Feature Modules (`libs/feature/`):**
+- Each feature module (shell, library, playback, search) contains React components for that feature area
+- Components are organized in subdirectories with barrel exports via `index.ts`
+- Feature modules can import from `libs/shared/types` for domain types
+- Use path aliases like `@m7/audio-os/feature/shell` to import from feature modules
+
+**Shared Libraries (`libs/shared/`):**
+- Domain types live in `libs/shared/types` and are the source of truth
+- `apps/web/lib/audio/contract.ts` currently re-exports these types (migration in progress)
+- When adding new domain types, add them to `libs/shared/types/src/index.ts`
+- The `infra/` subdirectory contains scripts for deploying to Raspberry Pi (see `libs/shared/infra/README.md`)
 
 ## Testing the Application
 
@@ -178,9 +235,9 @@ curl -s -X POST http://localhost:3000/api/audio \
 3. Export from `libs/mopidy/src/index.ts` if needed
 
 **To add a new playback action:**
-1. Add action type to `PlaybackActionRequest` union in `apps/web/lib/audio/contract.ts`
+1. Add action type to `PlaybackActionRequest` union in `libs/shared/types/src/index.ts`
 2. Implement handler in `apps/web/lib/audio/handlers.ts`
-3. Add mutation hook in `apps/web/lib/audio/hooks.ts` if needed
+3. The mutation hook `usePlaybackAction()` in `apps/web/lib/audio/hooks.ts` handles all actions automatically
 
 **To add a new API endpoint:**
 1. Create `route.ts` file in `apps/web/app/api/{endpoint}/`

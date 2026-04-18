@@ -8,10 +8,10 @@ Modelled 1:1 with the Mopidy Core API — no normalization, no field renaming, n
 
 ## Installation
 
-This is a private package in the monorepo. Import it via its package name:
+This is a private package in the monorepo. Import it via its path alias:
 
 ```ts
-import { createMopidy } from '@m7/mopidy';
+import { createMopidy } from '@m7/audio-os/mopidy';
 ```
 
 ---
@@ -19,7 +19,7 @@ import { createMopidy } from '@m7/mopidy';
 ## Quick start
 
 ```ts
-import { createMopidy } from '@m7/mopidy';
+import { createMopidy } from '@m7/audio-os/mopidy';
 
 const mopidy = createMopidy({ url: 'http://localhost:6680/mopidy/rpc' });
 
@@ -141,17 +141,17 @@ import type {
   Track, Album, Artist,
   TlTrack, Playlist, Image,
   SearchResult, PlaybackState,
-} from '@m7/mopidy';
+} from '@m7/audio-os/mopidy';
 ```
 
-Raw wire types (with `__model__?` discriminants) are also exported from `@m7/mopidy/rpc` if needed for lower-level work.
+Raw wire types (with `__model__?` discriminants) are also exported from `@m7/audio-os/mopidy/rpc` if needed for lower-level work.
 
 ---
 
 ## Error handling
 
 ```ts
-import { MopidyRpcError, MopidyTransportError } from '@m7/mopidy';
+import { MopidyRpcError, MopidyTransportError } from '@m7/audio-os/mopidy';
 
 try {
   await mopidy.playback.play();

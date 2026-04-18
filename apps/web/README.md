@@ -4,7 +4,7 @@ Next.js web player interface for controlling a [Mopidy](https://mopidy.com/) mus
 
 ## Overview
 
-This app provides a browser-based UI for playback control, playlist browsing, and track search. It communicates with Mopidy through the `@m7/mopidy` library (in `libs/mopidy/`) and exposes its own REST-style API routes consumed by React Query hooks on the client.
+This app provides a browser-based UI for playback control, playlist browsing, and track search. It communicates with Mopidy through the `@m7/audio-os/mopidy` library (in `libs/mopidy/`) and exposes its own REST-style API routes consumed by React Query hooks on the client.
 
 ## Features
 
@@ -34,7 +34,14 @@ npm run lint
 
 ### Prerequisites
 
-The app requires a running Mopidy instance accessible at the configured RPC URL. By default this points to `http://audio-os.local:6680/mopidy/rpc`. Update `MOPIDY_RPC_URL` in [next.config.ts](next.config.ts) to change the target.
+The app requires a running Mopidy instance accessible at the configured RPC URL. Set the `MOPIDY_RPC_URL` environment variable to configure the Mopidy endpoint:
+
+```bash
+# .env.local
+MOPIDY_RPC_URL=http://audio-os.local:6680/mopidy/rpc
+```
+
+The default target is `http://audio-os.local:6680/mopidy/rpc`.
 
 ## Architecture
 
@@ -51,20 +58,18 @@ app/
     search/route.ts           # GET: paginated search results
 
 lib/audio/
-  contract.ts    # Normalized domain types (camelCase)
+  contract.ts    # Re-exports domain types from libs/shared/types
   snapshot.ts    # Transforms raw Mopidy data → PlaybackSnapshot
   handlers.ts    # Orchestrates Mopidy calls for each action
   api.ts         # Client-side fetch wrappers
   hooks.ts       # TanStack Query hooks (usePlayback, usePlaybackAction, …)
-  playlists.ts   # Playlist normalization (server-only)
+  playlists.ts   # Playlist fetching logic (server-only)
   search.ts      # Search logic (server-only)
+  encoding.ts    # URI encoding utilities
   errors.ts      # Maps errors to HTTP responses
-
-components/
-  playback/      # Playback controls and progress bar
-  playlists/     # Playlist list and detail views
-  search/        # Search input and results
 ```
+
+**Note:** Feature components (shell, library, playback, search) have been moved to `libs/feature/` for reusability across apps. Domain types now live in `libs/shared/types/`.
 
 **Data flow:** UI components call React Query hooks → hooks call fetch functions in `api.ts` → API routes call server-side Mopidy helpers → Mopidy client in `lib/mopidy.ts` sends JSON-RPC to audio-os.
 
@@ -79,21 +84,26 @@ Raw Mopidy wire types (snake_case) are normalized into app domain types (camelCa
 | TypeScript | 5 | Type safety (strict mode) |
 | TanStack Query | 5 | Server state, polling, mutations |
 | Tailwind CSS | 4 | Styling |
-| `@m7/mopidy` | 0.0.1 | Internal Mopidy JSON-RPC client |
+| `@m7/audio-os/mopidy` | 0.0.1 | Internal Mopidy JSON-RPC client |
+| `@m7/audio-os/feature/*` | 0.0.1 | Feature modules (shell, library, playback, search) |
+| `@m7/audio-os/shared/*` | 0.0.1 | Shared domain types and utilities |
 
 ## Configuration
 
-**[next.config.ts](next.config.ts)** contains four key settings:
+**[next.config.ts](next.config.ts)** contains key settings:
 
 | Option | Value | Why |
 |---|---|---|
-| `transpilePackages` | `['@m7/mopidy']` | The internal library lives in `libs/mopidy/` as raw TypeScript; Next.js must transpile it since it isn't pre-compiled. |
+| `transpilePackages` | `['@m7/audio-os-mopidy', '@m7/audio-os-feature', '@m7/audio-os-shared', '@m7/audio-os-ui']` | The internal libraries live in `libs/` as raw TypeScript; Next.js must transpile them since they aren't pre-compiled. |
 | `output` | `'standalone'` | Produces a self-contained build in `.next/standalone/` that includes only the Node.js files needed to run the server — no `node_modules` install required on the target device. |
-| `env.MOPIDY_RPC_URL` | `http://audio-os.local:6680/mopidy/rpc` | Bakes the Mopidy JSON-RPC endpoint into the build. Change this before building if your audio-os device is at a different address. |
-| `outputFileTracingRoot` | monorepo root (`../../`) | Next.js's file tracing normally only crawls within the app directory. Setting this to the repo root ensures the standalone bundle correctly includes files imported from `libs/mopidy/` outside `apps/web/`. |
+| `outputFileTracingRoot` | monorepo root (`../../`) | Next.js's file tracing normally only crawls within the app directory. Setting this to the repo root ensures the standalone bundle correctly includes files imported from `libs/` outside `apps/web/`. |
 
-Other configuration:
-- **Path alias**: `@/*` maps to the `apps/web` root (defined in `tsconfig.json`)
+**Environment variables:**
+- `MOPIDY_RPC_URL`: The Mopidy JSON-RPC endpoint (read at request time from `process.env.MOPIDY_RPC_URL` in `lib/mopidy.ts`). Set in `.env.local` for development or via systemd/Docker for production.
+
+**Path aliases:**
+- `@/*` maps to the `apps/web` root (defined in `tsconfig.json`)
+- `@m7/audio-os/*` maps to monorepo libraries (defined in `tsconfig.base.json`)
 
 ## API Routes
 

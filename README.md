@@ -12,6 +12,9 @@ This monorepo contains client applications and shared libraries for building int
 
 **Libraries:**
 - `libs/mopidy` - Type-safe TypeScript client for the Mopidy JSON-RPC API
+- `libs/feature` - Feature modules with React components (shell, library, playback, search)
+- `libs/shared` - Shared domain types, utilities, constants, and infrastructure scripts
+- `libs/ui` - Reusable UI component library
 
 ## Prerequisites
 
@@ -57,11 +60,22 @@ npm run typecheck  # runs across entire monorepo
 ```
 audio-os/
 ├── apps/
-│   └── web/          # Next.js web player
+│   └── web/                    # Next.js web player
 ├── libs/
-│   └── mopidy/       # Mopidy RPC client library
-├── package.json      # Root workspace configuration
-└── tsconfig.base.json # Shared TypeScript config
+│   ├── mopidy/                 # Mopidy RPC client library
+│   ├── feature/
+│   │   ├── shell/              # App shell (sidebar, top bar)
+│   │   ├── library/            # Playlist and album browsing
+│   │   ├── playback/           # Playback controls
+│   │   └── search/             # Search interface
+│   ├── shared/
+│   │   ├── types/              # Domain types
+│   │   ├── utils/              # Shared utilities
+│   │   ├── constants/          # Shared constants
+│   │   └── infra/              # Raspberry Pi deployment scripts
+│   └── ui/                     # Reusable UI components
+├── package.json                # Root workspace configuration
+└── tsconfig.base.json          # Shared TypeScript config with path aliases
 ```
 
 ## Development
