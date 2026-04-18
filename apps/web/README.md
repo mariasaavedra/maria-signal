@@ -135,15 +135,33 @@ What the script does:
 
 ### Deploying to audio-os
 
+Build only:
+
 ```bash
 bash apps/web/scripts/package-artifact.sh
-# then copy the printed scp command and run it, e.g.:
-scp apps/web/dist/deck-20260417T120000Z-linux-arm64.tar.gz audio@audio-os.local:/home/audio/
 ```
 
-On the device, extract and start the server:
+Build + deploy latest artifact:
+
+`bash apps/web/scripts/deploy-artifact.sh`
+
+Or deploy a specific tarball:
+
+`bash apps/web/scripts/deploy-artifact.sh apps/web/dist/deck-<TIMESTAMP>-linux-arm64.tar.gz`
+
+The deploy script will:
+
+- Copy the tarball to `audio@audio-os.local:/home/audio/web/`
+- Extract it into /home/audio/web/releases/<TIMESTAMP>/
+- Update `/home/audio/web/current` to point to the new release
+- Restart the web systemd service if it exists
+
+The deployed server entrypoint is:
+
+`/home/audio/web/current/standalone/apps/web/server.js`
+
+# Use it
 
 ```bash
-tar -xzf deck-*.tar.gz
-node standalone/apps/web/server.js
-```
+bash apps/web/scripts/package-artifact.sh
+bash apps/web/scripts/deploy-artifact.sh

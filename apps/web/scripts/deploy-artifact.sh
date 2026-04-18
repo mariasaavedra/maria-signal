@@ -8,6 +8,7 @@ DIST_DIR="$ROOT_DIR/apps/web/dist"
 REMOTE_HOST="audio@audio-os.local"
 REMOTE_BASE="/home/audio/web"
 APP_SUBDIR="standalone/apps/web"
+SERVICE_NAME="web"
 
 latest_tarball() {
   ls -t "$DIST_DIR"/deck-*-linux-arm64.tar.gz 2>/dev/null | head -n 1
@@ -59,6 +60,14 @@ echo "Current release -> \$REMOTE_BASE/current"
 echo "Server entry -> \$REMOTE_BASE/current/\$APP_SUBDIR/server.js"
 EOF
 
+if ssh "$REMOTE_HOST" "systemctl list-unit-files | grep -q '^${SERVICE_NAME}\.service'"; then
+  echo "Restarting systemd service: $SERVICE_NAME"
+  ssh "$REMOTE_HOST" "sudo systemctl restart $SERVICE_NAME"
+  ssh "$REMOTE_HOST" "sudo systemctl --no-pager --full status $SERVICE_NAME || true"
+else
+  echo "No systemd service named '$SERVICE_NAME' found. Skipping restart."
+fi
+
 echo "Deploy complete."
-echo "Run with:"
+echo "Run manually with:"
 echo "ssh $REMOTE_HOST 'cd $REMOTE_BASE/current/$APP_SUBDIR && PORT=3000 node server.js'"
