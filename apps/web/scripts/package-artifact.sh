@@ -35,4 +35,4 @@ rm -rf "$OUT_DIR"
 
 echo "Artifact ready: $TARBALL"
 echo "Deploy with:"
-echo "scp \"$TARBALL\" deck@deck.local:/home/deck/"
+echo "scp \"$TARBALL\" audio@audio-os.local:/home/deck/"
