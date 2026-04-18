@@ -1,8 +1,6 @@
 'use client';
 
-import { Button } from '@m7/audio-os/ui/primitives';
-import { Spinner } from '@m7/audio-os/ui/feedback';
-import { TrackRow } from '@m7/audio-os/feature/library';
+import { TrackList } from '@m7/audio-os/feature/library';
 import type { NormalizedTrack } from '@m7/audio-os/shared/types';
 
 interface SearchResultsProps {
@@ -33,26 +31,13 @@ export function SearchResults({
   }
 
   return (
-    <div className="flex flex-col">
-      {tracks.map((track) => (
-        <TrackRow
-          key={track.uri}
-          track={track}
-          onPlay={() => onPlayTrack(track.uri)}
-          onAdd={() => onAddToQueue(track.uri)}
-        />
-      ))}
-      {hasMore && (
-        <div className="mt-3 mx-3 flex justify-center">
-          {isLoadingMore ? (
-            <Spinner size="sm" />
-          ) : (
-            <Button variant="ghost" onPress={onLoadMore}>
-              Load more
-            </Button>
-          )}
-        </div>
-      )}
-    </div>
+    <TrackList
+      tracks={tracks}
+      onPlayTrack={onPlayTrack}
+      onAddToQueue={onAddToQueue}
+      hasMore={hasMore}
+      onLoadMore={onLoadMore}
+      isLoadingMore={isLoadingMore}
+    />
   );
 }

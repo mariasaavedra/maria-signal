@@ -1,9 +1,8 @@
 'use client';
 
 import { Button } from '@m7/audio-os/ui/primitives';
-import { Spinner } from '@m7/audio-os/ui/feedback';
 import type { PlaylistDetail as PlaylistDetailType } from '@m7/audio-os/shared/types';
-import { TrackRow } from '../track-row';
+import { TrackList } from '../track-list';
 
 function formatTotalDuration(tracks: PlaylistDetailType['tracks']): string {
   const totalMs = tracks.reduce((sum, t) => sum + (t.duration ?? 0), 0);
@@ -68,40 +67,19 @@ export function PlaylistDetail({
         </div>
       </div>
 
-      {/* Track table */}
+      {/* Track list */}
       {detail.tracks.length === 0 ? (
         <p className="text-base text-charcoal/50 px-6 py-4">This playlist is empty.</p>
       ) : (
-        <div className="flex flex-col">
-          <div className="grid grid-cols-[3rem_1fr_5rem_6rem] px-4 pb-2 border-b border-charcoal/10 text-xs font-medium text-charcoal/40 uppercase tracking-wider">
-            <span className="text-center">#</span>
-            <span>Title</span>
-            <span className="text-right">Duration</span>
-            <span className="text-right">Menu</span>
-          </div>
-
-          {detail.tracks.map((track, i) => (
-            <TrackRow
-              key={track.uri}
-              index={i + 1}
-              track={track}
-              onPlay={() => onPlayTrack(track.uri)}
-              onAdd={() => onAddToQueue(track.uri)}
-            />
-          ))}
-
-          {hasMore && (
-            <div className="mt-2 mx-4 flex justify-center">
-              {isLoadingMore ? (
-                <Spinner size="sm" />
-              ) : (
-                <Button variant="ghost" onPress={onLoadMore}>
-                  Load more
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
+        <TrackList
+          tracks={detail.tracks}
+          onPlayTrack={onPlayTrack}
+          onAddToQueue={onAddToQueue}
+          showIndex
+          hasMore={hasMore}
+          onLoadMore={onLoadMore}
+          isLoadingMore={isLoadingMore}
+        />
       )}
     </div>
   );
